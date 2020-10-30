@@ -9,8 +9,8 @@ const msg = (email, emailText) => { return {
   to: email,
   from: 'randommaster@em7473.lucabol.com', // Use the email address or domain you verified above
   subject: emailText,
-  text: 'Remember, you promised to do this!!',
-  html: '<h2>Remember, you promised to do this!!</h2>'
+  text: emailText,
+  html: emailText
 }}
 
 const sendEmail = async (email, emailText) => await sgMail.send(msg(email, emailText))
@@ -74,8 +74,8 @@ module.exports = async function (context, myTimer) {
     const a = await emails.toArray()
     // Flatten the array
     const b = [].concat.apply([], a)
-    const promises = b.map(async t => sendEmail("lucabol@microsoft.com", t.subject))
-    //const promises = b.map(async t => sendEmail(t.to, t.subject))
+    //const promises = b.map(async t => sendEmail("lucabol@microsoft.com", t.subject))
+    const promises = b.map(async t => sendEmail(t.to, t.subject))
     const results = await Promise.allSettled(promises)
     return U.hr(html`<pre>${JSON.stringify(results, null, 2)} ${JSON.stringify(b, null, 2)}</pre>`)
   } catch(err) {
